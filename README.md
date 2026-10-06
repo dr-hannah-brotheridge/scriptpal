@@ -1,264 +1,124 @@
 # ScriptPal NZ
 
-> A patient-facing Progressive Web App for medication management — search NZ medications, understand your scripts, and generate a clean summary PDF for your doctor.
+> A patient-facing Progressive Web App that helps New Zealanders understand their
+> medications and bring a clean, structured medication summary to a doctor.
 
-🌐 **Live:** [scriptpal.co.nz](https://scriptpal.co.nz/)
-🎨 **Author:** [Dr. Hannah Brotheridge](https://github.com/dr-hannah-brotheridge)
+**[▶ Live: scriptpal.co.nz](https://scriptpal.co.nz/) &nbsp;·&nbsp; [Try the demo — no account needed](https://scriptpal.co.nz/demo) &nbsp;·&nbsp; [Watch the demo video](./public/how-it-works.mp4)**
 
----
-
-## Overview
-
-ScriptPal NZ helps patients understand their medications and bring structured, relevant information to their GP appointments — saving clinic time and improving care quality.
-
-Originally prototyped in FlutterFlow, the app has been rebuilt from the ground up as a custom-coded **Next.js PWA** with a Supabase backend. It is designed to be:
-
-- **Lightweight** — installable on any phone, works offline, no app store required.
-- **Patient-centric** — plain-language medication info, pill photos, and a one-tap medical summary.
-- **Secure by design** — per-user data isolation via PostgreSQL Row-Level Security (RLS).
-- **Clinically grounded** — built by an NZ-registered doctor (MBChB, University of Auckland).
-
-### Motivation
-
-> *"I want to provide solutions to the minute amount of time people have to see their doctor. By allowing people to have lists of their medications in one absolute place and a generated report of the relevant and pertinent info that doctors want — the treatment will be much better."*
-> — Dr. Hannah Brotheridge
+Built by **[Dr. Hannah Brotheridge](https://github.com/dr-hannah-brotheridge)**, MBChB (University of Auckland) — a non-practicing registered medical doctor who designs and engineers software for healthcare.
 
 ---
 
-## Key Features
+## Why it exists
 
-### 🔍 Medication Search
-- Lookup from **~2,994 NZ reference medications** (generic names + brand names), sourced from the NZULM monthly CSV.
-- Server-side `ILIKE` search across both `medication_name` and `brands` — so typing "Humal" finds "Insulin lispro (Humalog)".
-- Plain-language fields: *what it does in your body, what it protects, common dose range, side effects, what symptoms to watch for, when to seek help*.
+Medication is the most common medical treatment in the world, yet the experience of taking it is often confusing. Patients juggle blister packs, repeats and pharmacy labels; they lose track of what each medicine is for; and at a GP appointment there is rarely time to reconstruct an accurate medication list.
 
-### 💊 My Medications
-- Add medications from the reference database to your personal list.
-- Capture structured dosage (strength, unit, quantity, form) and frequency, plus free-text instructions and start/end dates.
-- **Pill photos** — upload up to 4 photos per medication (stored in Supabase Storage with signed URLs) so you always know what your pills look like.
+**ScriptPal turns that into a two-minute, structured, plain-language experience** — so patients understand what they're taking and arrive at appointments prepared. Better-informed patients and cleaner summaries mean less clinic time lost to guesswork and safer, higher-quality care.
 
-### 📄 Doctor Summary PDF
-- One-tap generation of a clean, A4 **Medical Summary PDF** (built with `@react-pdf/renderer`).
-- Includes: profile info, emergency contact, allergies, GP/pharmacy details, and current medications with dosages.
-- Timezone-aware (Pacific/Auckland) generation timestamp.
-- Share or print directly from the phone.
-
-### 👤 Profile & Settings
-- Patient details: name, DOB, NHI number.
-- Allergies, emergency contact, primary GP, and pharmacy info.
-- Account management: password reset, legal docs (TOS, Privacy, Medical Disclaimer), account deletion.
-
-### 📱 PWA
-- Installable on iOS/Android home screen via `manifest.webmanifest`.
-- Offline-capable service worker (`public/sw.js`).
-- Custom app icons (192px, 512px, maskable).
-- Portrait-locked, standalone display mode.
+The app was prototyped in FlutterFlow, then **rebuilt from scratch as a custom-coded web application** to gain full control over privacy, performance, accessibility and cost.
 
 ---
 
-## Tech Stack
+## What it does
 
-| Category | Technology |
+### 🔍 Find and understand any NZ medicine
+Searching across ~3,000 New Zealand reference medicines returns plain-language explanations written the way a doctor would explain them — what the medicine is, why it's prescribed, what it does in your body, common side effects, what to watch out for, and what happens if you stop. Searching a brand name ("Humalog") finds the generic ("Insulin lispro").
+
+### 💊 Build a personal medication list
+Add medications with structured dosage, frequency, dates and instructions; attach pill photos; and record custom supplements and natural remedies that aren't in any national database. Finished medicines move automatically into a "Previous Medications" history with notes on why they were stopped.
+
+### 🩹 Mirror a pharmacy blister pack
+For patients whose medicines are packed by their pharmacy, a dedicated **Pack View** reproduces the physical blister pack slot by slot (7 days × 4 times of day). Patients can see exactly what to take, and when — and the app remembers their preferred layout.
+
+### 📄 Generate a Doctor Summary in one tap
+A clean, print-ready A4 PDF containing the patient's option details, allergies, emergency contact, GP and pharmacy, current medications (including supplements) and a completed-medications history — designed to be shared or printed straight from the phone at an appointment.
+
+### 🧪 A full demo before you sign up
+Anyone can explore the entire app against a fictional sample patient at **`/demo`** — no account, no sign-up. It walks through real search results, the blister pack, the educational content and the summary PDF, turning visitors into users without a wall.
+
+### 📱 Install it like an app
+ScriptPal is a Progressive Web App: installable to the home screen on iOS and Android, works offline, and needs no app store — keeping it lightweight and instantly updatable.
+
+### 🔒 Privacy and safety as first-class features
+- Built for **New Zealand health information**, designed in line with the **Privacy Act 2020** and the **Health Information Privacy Code 2020**.
+- **Multi-person accounts** — manage medicines for yourself or family members ("Me", "Mum", "Dad"), each with its own private medication list, blister pack and doctor summary.
+- **Optional per-person privacy PIN**, enforced by the database itself — so one family member's information is a hard barrier the account owner cannot override, with a safe recovery path if a PIN is forgotten.
+- Data residency in Australia (Sydney), private photo storage via short-lived signed links, and account deletion that permanently removes both records *and* uploaded photos.
+
+### 🩺 Grounded in official sources
+Reference medicines come from the national medicines dataset, educational content is aligned to the New Zealand Formulary, and the app links out to **My Medicines** (Te Whatu Ora) official patient leaflets rather than copying them — matching conservatively so it would rather show *no* link than a *wrong* one.
+
+### 📷 Scan a pharmacy label (COMING SOON)
+Point the camera at a pharmacy label and ScriptPal reads it with an AI vision model running **inside New Zealand** (Amazon Bedrock, Auckland) and pre-fills the medication form for the patient to review — the label image is processed in memory and never stored.
+
+---
+
+## Skills this project demonstrates
+ScriptPal is a single-developer, end-to-end product from clinical problem definition to shipped, hosted software. It demonstrates:
+
+**Product & domain**
+- Identifying a real clinical problem and turning it into a usable product
+- Healthcare domain expertise and regulatory awareness (Privacy Act, Health Information Privacy Code, medical-disclaimer framing)
+- User-centred design: onboarding, accessibility (font-size control, colour never used alone), a "try before you buy" demo, and trust-building consent flows
+
+**Full-stack engineering**
+- **Next.js 15 (App Router) + React 19 + TypeScript** — a modern, type-safe web application
+- **Tailwind CSS v4** design system with no third-party UI, icon or date dependencies, keeping the bundle lean for mobile
+- **Supabase (PostgreSQL + Auth + Storage)** backend, including a substantial relational data model, database functions and SQL migrations
+- **Server-side PDF generation** for the Doctor Summary
+- **PWA engineering** — service worker, offline handling, install prompts and manifest
+
+**Security & privacy engineering**
+- Row-Level Security (RLS) so users can only ever access their own data — with automated tests that *prove* isolation rather than assume it
+- Server-only secrets, admin gating, rate limiting against brute-force and spam, strict security headers (CSP, HSTS) and audit logging
+- Database-enforced privacy PINs with bcrypt hashing and one-time recovery codes
+
+**AI integration**
+- A vision/OCR pipeline using an in-region AWS Bedrock model for pharmacy-label reading
+- An LLM-powered content pipeline that generates and quality-checks plain-language educational content, with display-time sanitisation so raw model output is never shown
+
+**Data engineering & quality**
+- Ingestion and transformation of a national medicines dataset
+- Idempotent, fault-tolerant, concurrency-controlled batch jobs with verification scripts
+- CI/CD with automated dependency scanning, linting and build gates on every change
+
+**Cloud & delivery**
+- Deployment and hosting on **Vercel**, with **Supabase**, **AWS**, **Upstash** and **Resend** in the stack
+- Shipping and maintaining a real, live product used in a regulated domain
+
+---
+
+## Tech stack at a glance
+
+| Layer | Technology |
 | --- | --- |
-| **Frontend** | Next.js 15 (App Router), React 19, TypeScript |
-| **Styling** | Tailwind CSS v4 (theme tokens in `app/globals.css`, no config file) |
-| **Backend** | Supabase (PostgreSQL + Auth + Storage) via `@supabase/ssr` |
-| **PDF** | `@react-pdf/renderer` |
-| **AI / LLM** | Anthropic SDK (`@anthropic-ai/sdk`), OpenAI SDK (reference data enrichment) |
-| **Data Sources** | NZULM / NZ Formulary scrapers (`cheerio`, `pdf-parse`) |
-| **Deployment** | Vercel (auto-deploy on Git push) |
-| **PWA** | Web App Manifest + Service Worker |
-
-> **No icon or date libraries.** Inline SVGs in `components/icons.tsx`; native `Intl` in `lib/date.ts`.
+| Frontend | Next.js 15 (App Router), React 19, TypeScript |
+| Styling | Tailwind CSS v4 (custom design tokens) |
+| Backend | Supabase — PostgreSQL, Auth, Storage |
+| Documents | Server-side PDF generation (`@react-pdf/renderer`) |
+| AI | AWS Bedrock (in-region vision OCR) + an LLM content pipeline |
+| Email | Resend (contact form + transactional auth email) |
+| Hosting | Vercel |
+| Platform | Installable PWA with offline support |
 
 ---
 
-## Architecture
+## Project status
 
-### Data Model
-
-| Table | Scope | Description |
-| --- | --- | --- |
-| `total_medications` | Read-only (~2,994 rows) | Reference medication database (generics + auto-created generics from NZULM trade rows). Includes `raw_scraped_context` (cached NZF monograph text) and 9 patient-facing educational columns enriched by GLM-5.2. Written to via `import-nzulm.js` and `/admin`. |
-| `nzulm_lookup` | Read-only | NZULM trade/brand name lookup. Links `brand_name` → `generic_medication_id` → `total_medications.id`. The `brands` column is backfilled via `refresh_brands_from_lookup()` RPC. |
-| `patient_details` | Per-user (1:1 with `auth.users`) | Profile: name, DOB, NHI, allergies, emergency contact, GP, pharmacy. |
-| `patient_medications` | Per-user | A user's tracked medications. `medication_id` → `total_medications.id`. |
-| `medication_photos` | Per-user | Photo metadata rows; images stored in Supabase Storage bucket `medication-photos`. |
-
-### Auth & Security
-
-- **Middleware** (`middleware.ts`) guards all non-public routes — unauthenticated users are redirected to `/login`.
-- **Row-Level Security (RLS)** is enabled on `patient_details` and `patient_medications`. Every policy is scoped to `auth.uid()` — users can only read/write their own rows (SELECT, INSERT, UPDATE, DELETE).
-- **Admin access** uses a server-only Supabase client (service role key) in `/admin`. Access is restricted to an email allowlist (`ADMIN_EMAILS` env var).
-- The service role key is **never** exposed to the browser — it's used solely in server components and route handlers.
-
-### Route Map
-
-**App routes (authenticated):**
-`/home` · `/search` · `/search/[id]` · `/my-meds` · `/my-meds/[id]` · `/summary` · `/settings` · `/account` · `/legal` · `/about`
-
-**Auth routes (public):**
-`/login` · `/signup` · `/reset-password` · `/auth/callback` · `/auth/update-password`
-
-**Admin routes (email-allowlisted):**
-`/admin/populate` · `/admin/api/sync-row` · `/admin/api/process-row`
+ScriptPal NZ is in **beta**. The core app, demo mode and legal documentation are live and continuously improving ahead of public release.
 
 ---
 
-## Admin & AI Enrichment
+## Links
 
-The `/admin/populate` panel lets authorized admins review and enrich the ~2,994-medication reference database:
-
-- **Approve & Sync** individual rows or fill blank columns.
-- Existing manual text is **never** automatically overwritten — AI enrichment only fills empty fields.
-- Reference fields include: drug class, why prescribed, what it does, common dose range, side effects, symptoms to watch for, and when to seek help.
-- Powered by LLM-backed prompts (Anthropic API and NeuralWatt GLM endpoint for cost-optimised enrichment).
-
-### Data Pipeline: NZULM CSV → NZF Scrape → GLM Enrichment
-
-The reference medication database is built and maintained through a three-stage pipeline:
-
-**Stage 1 — NZULM CSV Import** (`import-nzulm.js`):
-- Parses the NZULM `prescribing_term_selection_list_dump.csv` (monthly release).
-- **Pass 1:** Inserts generic medication names (truncated at dosing metrics, capitalised) into `total_medications`.
-- **Pass 2:** Inserts trade/brand rows into `nzulm_lookup`. When a trade row's generic parent doesn't exist (e.g. "insulin lispro" has no generic CSV row), it **auto-creates** the missing generic so brands like Humalog aren't lost.
-- Backfills `total_medications.brands` via `refresh_brands_from_lookup()` RPC.
-- Strict data-cleaning: drops `[obsolete]` entries, de-duplicates, strips manufacturer parenthesised substrings.
-
-**Stage 2 — NZF Scraping** (`scripts/lib/nzf-scraper.js`):
-- Scrapes `nzf.org.nz` monograph pages for each medication.
-- Extracts labelled clinical section text (Drug action, Cautions, Adverse effects, Dosing, etc.).
-- Caches scraped text in `total_medications.raw_scraped_context` — serving as **RAG context** for the LLM enrichment step.
-- Handles multi-monograph medications (e.g. methotrexate — oncology + autoimmune).
-- Marks non-drug items (devices, supplements) as `NOT_IN_NZF` so GLM uses a safe device-classification prompt.
-
-**Stage 3 — GLM-5.2 Enrichment** (`build-educational-db.js`):
-- Loops every medication with blank educational fields and sends cached NZF text as RAG context to **NeuralWatt GLM-5.2** (OpenAI-compatible API).
-- GLM generates 9 patient-facing fields per medication at a **6th-grade reading level**: drug class, why prescribed, what it does, what it protects, if you stop it, common dose range, side effects, symptoms to watch for, when to seek help.
-- **Idempotent** — only fills blank fields; never overwrites existing human-reviewed content.
-- **Cost-optimised**: async concurrency pool (`p-limit`, default 10) keeps GLM's prompt cache hot; smart re-scrape modes skip GLM calls when cached text is unchanged.
-- Resilient: per-medication try/catch; truncated JSON responses are auto-repaired.
-
-**Verification scripts** in `scripts/`:
-- `verify-rows.js`, `verify-five-rows.js`, `verify-success.js` — data integrity checks.
-- `db-diagnostic.js`, `check-column.js`, `check-col-widths.js` — schema/column diagnostics.
-- `probe-nzf-*.js` — NZ Formulary endpoint/formatter probe utilities.
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- A Supabase project (PostgreSQL + Auth + Storage)
-- A Vercel account (for deployment)
-
-### Environment Variables
-
-Copy `.env.example` to `.env.local` and fill in the values. See `.env.example` for full details.
-
-| Variable | Scope | Purpose |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | public | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | public | Supabase anon key |
-| `SUPABASE_SERVICE_ROLE_KEY` | **server only** | `/admin` sync + account deletion. Never `NEXT_PUBLIC_`. |
-| `ADMIN_EMAILS` | server only | Comma-separated emails allowed to access `/admin` |
-| `ANTHROPIC_API_KEY` | server only | Claude enrichment in `/admin/populate` (optional) |
-| `NEURALWATT_BASE_URL` | server only | GLM endpoint for `scripts/build-educational-db.js` |
-| `NEURALWATT_API_KEY` | server only | API key for NeuralWatt |
-| `NEURALWATT_MODEL` | server only | Model identifier (e.g. `GLM-5.2`) |
-
-**Supabase Auth config:** Add your redirect URLs in *Dashboard → Authentication → URL Configuration*:
-```
-https://www.scriptpal.co.nz/auth/callback
-https://scriptpal.co.nz/auth/callback
-```
-
-### Install & Run
-
-```bash
-npm install
-npm run dev          # local development (http://localhost:3000)
-```
-
-### Build & Deploy
-
-```bash
-npm run build        # production build (what Vercel runs)
-```
-
-Deploy by pushing to the connected Git branch — Vercel builds and deploys automatically.
-
-### Utility Scripts
-
-```bash
-npm run build:edu-db     # rebuild the educational medication database
-npm run build:pwa-icons  # regenerate PWA icons from public/icon-source.png
-```
-
----
-
-## Project Structure
-
-```
-.
-├── app/
-│   ├── (app)/            # Authenticated app routes (home, search, my-meds, summary, settings)
-│   ├── account/          # Account management + API
-│   ├── admin/            # Admin panel (populate, sync-row, process-row APIs)
-│   ├── auth/             # Auth callback + password update
-│   ├── login/            # Login page
-│   ├── signup/           # Signup page
-│   ├── reset-password/   # Password reset
-│   ├── layout.tsx        # Root layout
-│   └── globals.css       # Tailwind v4 theme tokens
-├── components/
-│   ├── admin/            # Admin data grid
-│   ├── forms/            # Medication + profile forms
-│   ├── AppChrome.tsx     # App shell + page title
-│   ├── BottomNav.tsx     # Mobile bottom navigation
-│   ├── MedicationPhotos.tsx  # Photo upload + lightbox
-│   ├── OnboardingFlow.tsx    # Pre-auth onboarding
-│   └── ...
-├── lib/
-│   ├── pdf/DoctorSummaryPdf.tsx  # @react-pdf/renderer Medical Summary
-│   ├── supabase/         # Server, client, and admin Supabase clients
-│   ├── admin-auth.ts     # Server-only admin email check
-│   ├── types.ts          # TypeScript interfaces (mirrors live Supabase schema)
-│   ├── constants.ts      # Admin emails + reference field definitions
-│   └── date.ts           # NZ timezone date formatting
-├── scripts/              # Data scraping + DB build utilities
-├── supabase/migrations/  # SQL migrations (RLS policies, schema changes)
-├── public/               # PWA manifest, service worker, icons
-├── middleware.ts         # Auth-guarded routing
-└── next.config.ts
-```
-
----
-
-## Engineering Highlights
-
-- **RLS-hardened data isolation** — Every patient table has strict `auth.uid()`-scoped policies for SELECT, INSERT, UPDATE, and DELETE. A dedicated migration (`20260709_000001`) replaced previously permissive policies with properly scoped ones.
-- **Paginated server-side search** — Bypasses PostgREST's 1000-row default cap by looping in chunks, with `ILIKE` filtering across both generic and brand names.
-- **Zero-dependency UI** — No icon library (inline SVGs) and no date library (native `Intl`). Keeps the bundle lean for mobile.
-- **Structured dosage capture** — Dosage is captured as structured fields (strength, unit, quantity, form) then composed into a free-text string, giving both UX and storage flexibility.
-- **AI-assisted data pipeline** — Cost-optimised LLM enrichment (model cascading, blank-field-only writes) populates the reference medication database without overwriting human-reviewed content.
-
----
-
-## About the Author
-
-**Dr. Hannah Brotheridge** is an NZ-registered doctor (MBChB, University of Auckland) and clinical product creator. She designs, architects, and evaluates AI systems and applications for healthcare — bridging the gap between clinical safety protocols and technical system design.
-
-- 🌐 [scriptpal.co.nz](https://scriptpal.co.nz/)
-- 🌐 [signalhealth.dev](https://signalhealth.dev/)
-- 💼 [GitHub](https://github.com/dr-hannah-brotheridge)
-
-> *"If we can improve the clinical safety and validity, the empathy and rapport of AI; then this tool will be indispensable. We need to be looking upstream at how people can get help."*
+- 🌐 **Live app:** [scriptpal.co.nz](https://scriptpal.co.nz/)
+- 🧪 **Interactive demo:** [scriptpal.co.nz/demo](https://scriptpal.co.nz/demo)
+- ▶️ **How it works:** [demo video](./public/how-it-works.mp4)
+- 💼 **GitHub:** [github.com/dr-hannah-brotheridge](https://github.com/dr-hannah-brotheridge)
 
 ---
 
 ## License
 
-This project is proprietary. All rights reserved.
+Proprietary. All rights reserved.
+
