@@ -1,11 +1,11 @@
 # ScriptPal NZ
 
 > A patient-facing Progressive Web App that helps New Zealanders understand their
-> medications and bring a clean, structured medication summary to a doctor.
+> medications — and bring a clean, structured medication summary to their doctor.
 
 **[▶ Live: scriptpal.co.nz](https://scriptpal.co.nz/) &nbsp;·&nbsp; [Try the demo — no account needed](https://scriptpal.co.nz/demo) &nbsp;·&nbsp; [Watch the demo video](./public/how-it-works.mp4)**
 
-Built by **[Dr. Hannah Brotheridge](https://github.com/dr-hannah-brotheridge)**, MBChB (University of Auckland) — a non-practicing registered medical doctor who designs and engineers software for healthcare.
+Built by **[Dr. Hannah Brotheridge](https://github.com/dr-hannah-brotheridge)**, MBChB (University of Auckland) — a practising medical doctor who designs and engineers software for healthcare.
 
 ---
 
@@ -31,10 +31,10 @@ Add medications with structured dosage, frequency, dates and instructions; attac
 For patients whose medicines are packed by their pharmacy, a dedicated **Pack View** reproduces the physical blister pack slot by slot (7 days × 4 times of day). Patients can see exactly what to take, and when — and the app remembers their preferred layout.
 
 ### 📄 Generate a Doctor Summary in one tap
-A clean, print-ready A4 PDF containing the patient's option details, allergies, emergency contact, GP and pharmacy, current medications (including supplements) and a completed-medications history — designed to be shared or printed straight from the phone at an appointment.
+A clean, print-ready A4 PDF containing the patient's details, allergies, emergency contact, GP and pharmacy, current medications (including supplements) and a completed-medications history — designed to be shared or printed straight from the phone at an appointment.
 
 ### 🧪 A full demo before you sign up
-Anyone can explore the entire app against a fictional sample patient at **`/demo`** — no account, no sign-up. It walks through real search results, the blister pack, the educational content and the summary PDF, turning visitors into users without a wall.
+Anyone can explore the entire app against a fictional sample patient at **`/demo`** — no account, no sign-up, nothing saved. It walks through real search results, the blister pack, the educational content and the summary PDF, turning curious visitors into users without a wall.
 
 ### 📱 Install it like an app
 ScriptPal is a Progressive Web App: installable to the home screen on iOS and Android, works offline, and needs no app store — keeping it lightweight and instantly updatable.
@@ -48,13 +48,19 @@ ScriptPal is a Progressive Web App: installable to the home screen on iOS and An
 ### 🩺 Grounded in official sources
 Reference medicines come from the national medicines dataset, educational content is aligned to the New Zealand Formulary, and the app links out to **My Medicines** (Te Whatu Ora) official patient leaflets rather than copying them — matching conservatively so it would rather show *no* link than a *wrong* one.
 
-### 📷 Scan a pharmacy label (COMING SOON)
-Point the camera at a pharmacy label and ScriptPal reads it with an AI vision model running **inside New Zealand** (Amazon Bedrock, Auckland) and pre-fills the medication form for the patient to review — the label image is processed in memory and never stored.
+### 📷 Scan a pharmacy label with OCR
+Point the camera at a pharmacy label and ScriptPal reads it with an **AI vision/OCR model** (Amazon Bedrock, Claude) called **server-side only**. It extracts the medicine name, strength, dose, frequency instructions, repeats remaining, dispensing pharmacy and total pack quantity, then **pre-fills the medication form** for the patient to review and correct before anything is saved.
+
+- **Multiple photos, one read** — several label shots are combined so a round bottle's full sticker can be captured, and each is downscaled in the browser before upload.
+- **Transient by design** — the photo is sent in memory and **never written to disk or to Supabase Storage, and never logged**. It is processed in **Australia** (`ap-southeast-2` Sydney or `ap-southeast-4` Melbourne) through an Australia cross-region inference profile — it leaves New Zealand briefly for this one job and is not stored by ScriptPal or by AWS.
+- **Server-side validation and rate limiting** — the model's raw output is parsed and shape-validated (`parseModelJson` / `normaliseScannedLabel`) and the endpoint is IP rate-limited, so malformed or hostile output can never reach the form.
+- **Evaluated, not assumed** — the pipeline is covered by three test tiers: pure-helper evals, a *dirty-OCR* robustness eval, and a **live Bedrock OCR eval over synthetic NZ labels**, scored field-by-field against ground truth.
 
 ---
 
 ## Skills this project demonstrates
-ScriptPal is a single-developer, end-to-end product from clinical problem definition to shipped, hosted software. It demonstrates:
+
+ScriptPal is a single-developer, end-to-end product — from clinical problem definition to shipped, hosted software. It demonstrates:
 
 **Product & domain**
 - Identifying a real clinical problem and turning it into a usable product
@@ -74,7 +80,7 @@ ScriptPal is a single-developer, end-to-end product from clinical problem defini
 - Database-enforced privacy PINs with bcrypt hashing and one-time recovery codes
 
 **AI integration**
-- A vision/OCR pipeline using an in-region AWS Bedrock model for pharmacy-label reading
+- A vision/OCR pipeline that reads a NZ pharmacy label with an AWS Bedrock vision model (Claude), called server-side only, and pre-fills the medication form — tested across pure-helper, dirty-OCR and live-model eval tiers
 - An LLM-powered content pipeline that generates and quality-checks plain-language educational content, with display-time sanitisation so raw model output is never shown
 
 **Data engineering & quality**
@@ -96,7 +102,7 @@ ScriptPal is a single-developer, end-to-end product from clinical problem defini
 | Styling | Tailwind CSS v4 (custom design tokens) |
 | Backend | Supabase — PostgreSQL, Auth, Storage |
 | Documents | Server-side PDF generation (`@react-pdf/renderer`) |
-| AI | AWS Bedrock (in-region vision OCR) + an LLM content pipeline |
+| AI | AWS Bedrock (Claude vision OCR, server-side) + an LLM content pipeline |
 | Email | Resend (contact form + transactional auth email) |
 | Hosting | Vercel |
 | Platform | Installable PWA with offline support |
@@ -121,4 +127,5 @@ ScriptPal NZ is in **beta**. The core app, demo mode and legal documentation are
 ## License
 
 Proprietary. All rights reserved.
+
 
